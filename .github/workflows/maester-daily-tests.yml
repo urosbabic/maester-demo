@@ -22,6 +22,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Verify PowerShell compatibility
+        shell: pwsh
+        run: |
+          if ($PSVersionTable.PSVersion -lt [version]'7.4') {
+            throw 'Maester 3.0 requires PowerShell 7.4 or later.'
+          }
+          Write-Host "PowerShell $($PSVersionTable.PSVersion)"
+
       - name: Run Maester tests
         id: maester
         uses: maester365/maester-action@main
@@ -34,7 +42,8 @@ jobs:
           include_teams: false
           include_longrunning_tests: false
           include_preview_tests: false
-          maester_version: latest
+          # Maester 3.0 is currently available through the preview channel.
+          maester_version: preview
           disable_telemetry: false
           step_summary: true
 
